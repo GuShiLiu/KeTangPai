@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mybatis.demo.dao.CourseMapper">
+    <select id="getAllCourseByUid" parameterType="java.lang.Long"
+            resultType="mybatis.demo.entity.Course">
+        select cid,`name`,courseAdd,uid from course where uid = #{uid}
+    </select>
+
+    <select id="getAllCourseByUidStudent" parameterType="java.lang.Long"
+            resultType="mybatis.demo.entity.Course">
+        select cid,`name`,courseAdd,uid from course where cid in
+          (select cid from electivecourse where uid = #{uid})
+    </select>
+
+    <insert id="addCourse" parameterType="mybatis.demo.entity.Course">
+        insert into course
+        (cid,`name`,courseAdd,uid) values
+        (#{cid},#{name},#{courseAdd},#{uid})
+    </insert>
+
+    <select id="getCountOfCourseAdd" parameterType="java.lang.String"
+            resultType="java.lang.Integer">
+        select count(*) from course where courseAdd=#{courseAdd}
+    </select>
+
+    <select id="getByCourseAdd" parameterType="java.lang.String"
+            resultType="mybatis.demo.entity.Course">
+        select * from course where courseAdd=#{courseAdd}
+    </select>
+
+    <delete id="deleteCourse" parameterType="java.lang.Long">
+        delete from course where cid=#{cid}
+    </delete>
+
+    <delete id="deleteCourseStudent" parameterType="mybatis.demo.entity.ElectiveCourse">
+        delete from `electivecourse` where uid=#{uid} and cid=#{cid}
+    </delete>
+
+    <insert id="addStudentCourse" parameterType="mybatis.demo.entity.ElectiveCourse">
+        insert into `electivecourse`
+        (uid,cid)
+        values
+        (#{uid},#{cid})
+    </insert>
+
+    <select id="getWorksByCid" parameterType="java.lang.Long"
+                     resultType="mybatis.demo.entity.Work">
+         select * from `work` where cid=#{cid}
+    </select>
+
+    <select id="getTeacherName" parameterType="java.lang.Long"
+            resultType="java.lang.String">
+        select uname from `user` where uid=#{uid}
+    </select>
+
+    <select id="getCourseByCid" parameterType="java.lang.Long"
+            resultType="mybatis.demo.entity.Course">
+        select * from course where cid=#{cid}
+    </select>
+
+    <select id="getTeacherByCid" parameterType="java.lang.Long"
+            resultType="mybatis.demo.entity.User">
+        select uid,uname,usex,password,school,phone,username from `user` where uid in
+          (select uid from `course` where cid=#{cid})
+    </select>
+
+    <select id="getStudentByCid" parameterType="java.lang.Long"
+            resultType="mybatis.demo.entity.User">
+        select uid,uname,usex,password,school,phone,username from `user` where uid in
+        (select uid from `electivecourse` where cid=#{cid})
+    </select>
+    
+    <delete id="deleteStudentByCid" parameterType="mybatis.demo.entity.ElectiveCourse">
+        delete from `electivecourse` where uid=#{uid} and cid=#{cid}
+    </delete>
+    
+    <select id="getScoreByCid" parameterType="java.lang.Long"
+            resultType="mybatis.demo.entity.ElectiveCourse">
+        select * from `electivecourse` where cid=#{cid}
+    </select>
+
+    <update id="upDateScore" parameterType="mybatis.demo.entity.ElectiveCourse">
+        update `electivecourse` set score =#{score} where ecid=#{ecid};
+    </update>
+
+    <select id="getWorkScoreOfCourse" parameterType="mybatis.demo.entity.WorkSheetOfStudent"
+            resultType="mybatis.demo.entity.WorkSheetOfStudent">
+        select * from `worksheetofstudent` where wid in
+        (select wid from `work` where cid=#{cid}) and uid=#{uid}
+    </select>
+    <select id="getCountOfCourseAndUser" parameterType="mybatis.demo.entity.ElectiveCourse"
+            resultType="java.lang.Integer">
+        select count(*) from `electivecourse` where uid=#{uid} and cid=#{cid}
+    </select>
+    
+    <select id="getScoreOfCourse" parameterType="mybatis.demo.entity.ElectiveCourse"
+                resultType="mybatis.demo.entity.ElectiveCourse">
+        select * from `electivecourse` where uid=#{uid} and cid=#{cid};
+    </select>
+
+</mapper>
